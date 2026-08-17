@@ -1,4 +1,4 @@
-ANGEL GABRIEL RIVAS ARREOLA y 9941-25-23017.
+ANGEL GABRIEL RIVAS ARREOLA 9941-25-23017.
 Este codigo crea una solicitud de ingreso de datos de varios vehiculos para luego guardarlos y mostrarlor luego muestra la joranada mostrando los datos .
 
 Metodos:
