@@ -1,7 +1,7 @@
 public class EnvioInternacional extends Envio{
 
     private String paisDestino;
-    private int cargoFijo = 75;
+    private double cargoFijo = 75.00;
 
     //constructor
     public EnvioInternacional(String codigoenvio, String nombre, double pesoKg, String paisDestino) {
@@ -26,6 +26,7 @@ public class EnvioInternacional extends Envio{
             System.out.println("Peso: " + getPesoKg() + " kg");
             System.out.println("Costo Base: Q" + calcularCostoBase());
             System.out.println("Cargo Fijo Internacional: Q" + cargoFijo);
+            System.out.println("Recargo del 12%: Q3.60" );
             System.out.println("Costo Final: Q" + calcularCostoFinal());
         } else {
             Resumen();
