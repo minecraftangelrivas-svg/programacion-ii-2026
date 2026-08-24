@@ -1,69 +1,99 @@
-import java.util.Scanner;
+    import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int opcion = 0;
+    public class Main {
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+            int opcion = 0;
 
-        do {
-            System.out.println("\nSISTEMA DE ENVÍOS");
-            System.out.println("1. Registrar envío nacional");
-            System.out.println("2. Registrar envío internacional");
-            System.out.println("3. Salir");
+            do {
+                System.out.println("\nSISTEMA DE ENVÍOS");
+                System.out.println("1. Registrar envío nacional");
+                System.out.println("2. Registrar envío internacional");
+                System.out.println("3. Salir");
 
-            opcion = scanner.nextInt();
+                opcion = scanner.nextInt();
+                scanner.nextLine();//Limpia
 
-            if (opcion == 1 || opcion == 2) {
-                // Valida que no esté vacío
-                String codigo = "";
-                while (codigo.trim().isEmpty()) {// trim quita espacios extras y isEmpty revisa si quedó vacío
-                    System.out.print("Ingrese el cdigo del envío: ");
-                    codigo = scanner.nextLine();
-                    if (codigo.trim().isEmpty()) {
-                        System.out.println("Error: El codigo esta vacio.");
+                if (opcion == 1 || opcion == 2) {
+                    // Valida que no esté vacío
+                    String codigo = "";
+                    while (codigo.trim().isEmpty()) {// trim quita espacios extras y isEmpty revisa si quedó vacío
+                        System.out.print("Ingrese el cdigo del envío: ");
+                        codigo = scanner.nextLine();
+                        if (codigo.trim().isEmpty()) {
+                            System.out.println("Error: El codigo esta vacio.");
+                        }
                     }
-                }
-                String nombre = ""; //aqui tambien validamos que no este vacio pero en el caso de nombre
-                while (nombre.trim().isEmpty()) {
-                    System.out.print("Ingrese el nombre del destinatario: ");
-                    nombre = scanner.nextLine();
-                    if (nombre.trim().isEmpty()) {
-                        System.out.println("Error: El nombre esta vacio.");
-                    }
-                }
-
-                double peso = 0;//VALIDAMOS QUE SEA MAYOR A CERO
-                while (peso <= 0) {
-                    System.out.print("Ingrese el peso en kg (> 0): ");
-                    peso = scanner.nextDouble();
-                    scanner.nextLine(); // Limpiar el Enter
-                    if (peso <= 0) {
-                        System.out.println("Error: El peso debe ser mayor a cero.");
-                    }
-                }
-
-                if (opcion == 1) {
-                    String departamento = "";
-                    while (departamento.trim().isEmpty()) {
-                        System.out.print("Ingrese el departamento: ");
-                        departamento = scanner.nextLine();
-                        if (departamento.trim().isEmpty()) {
-                            System.out.println("Error: El departamento esta vacio.");
+                    String nombre = ""; //aqui tambien validamos que no este vacio pero en el caso de nombre
+                    while (nombre.trim().isEmpty()) {
+                        System.out.print("Ingrese el nombre del destinatario: ");
+                        nombre = scanner.nextLine();
+                        if (nombre.trim().isEmpty()) {
+                            System.out.println("Error: El nombre esta vacio.");
                         }
                     }
 
-                    double distancia = 0;
-                    while (distancia <= 0) {
-                        System.out.print("Ingrese la distancia en km debe ser mayor de 0: ");
-                        distancia = scanner.nextDouble();
-                        if (distancia <= 0) {
-                            System.out.println("Error: La distancia debe ser mayor a cero.");
+                    double peso = 0;//VALIDAMOS QUE SEA MAYOR A CERO
+                    while (peso <= 0) {
+                        System.out.print("Ingrese el peso en kg (> 0): ");
+                        peso = scanner.nextDouble();
+                        scanner.nextLine(); // Limpiar el Enter
+                        if (peso <= 0) {
+                            System.out.println("Error: El peso debe ser mayor a cero.");
                         }
                     }
+                    Envio envioActual = null;
+                    if (opcion == 1) {
+                        String departamento = "";
+                        while (departamento.trim().isEmpty()) {
+                            System.out.print("Ingrese el departamento: ");
+                            departamento = scanner.nextLine();
+                            if (departamento.trim().isEmpty()) {
+                                System.out.println("Error: El departamento esta vacio.");
+                            }
+                        }
 
-                    EnvioNacional envioN = new EnvioNacional(codigo, nombre, peso, departamento, distancia);
+                        double distancia = 0;
+                        while (distancia <= 0) {
+                            System.out.print("Ingrese la distancia en km debe ser mayor de 0: ");
+                            distancia = scanner.nextDouble();
+                            scanner.nextLine();//limpia
+                            if (distancia <= 0) {
+                                System.out.println("Error: La distancia debe ser mayor a cero.");
+                            }
+                        }
+
+                        envioActual = new EnvioNacional(codigo, nombre, peso, departamento, distancia);
+
+                    }else {
+                        String pais = "";
+                        while (pais.trim().isEmpty()) {
+                            System.out.print("Ingrese el país: ");
+                            pais = scanner.nextLine();
+                            if (pais.trim().isEmpty()) {
+                                System.out.println("Error: El país esta vacio.");
+                            }
+                        }
+                        envioActual = new EnvioInternacional(codigo, nombre, peso, pais);
+                    }
+
+                     //llamos al resumen
                     System.out.println("\nCosto calculado exitosamente.");
-                    envioN.Resumen(true);
+                    envioActual.Resumen(true);
 
+                    System.out.print("\n¿Desea registrar otro envío? (s/n): ");
+                    String respuesta = scanner.nextLine().trim();
 
+                    if (respuesta.equals("n") || respuesta.equals("N")) {
+                        opcion = 3; // termina el ciclo
+                    }
+
+                } else if (opcion != 3) {
+                    System.out.println("Opción inválida. Seleccione un número entre 1 y 3.");
                 }
+
+            } while (opcion != 3);
+            // Despedida
+            System.out.println("¡Gracias!");
+        }
+    }
