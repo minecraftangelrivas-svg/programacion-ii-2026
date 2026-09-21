@@ -24,5 +24,6 @@ Q6.00 por hora.
 Si un vehículo permanece más de 5 horas, se aplicará un 10 % de descuento sobre el costo total.
 
 examen vehiculos
+
 ANGEL GABRIEL RIVAS ARREOLA.
 9941-25-23017.
