@@ -23,12 +23,19 @@ Navegador Web / Cliente HTTP: Navegador web como Chrome, Edge, Firefox.
 Estructura principal:
 
 com.estudiante.controldespensaapi/
+
 ├── ControlDespensaApiApplication.java
+
 └── despensa/
+
     ├── controller/
+    
     │   └── ProductoController.java
+    
     └── model/
+    
         ├── Producto.java
+        
         └── ResumenInventario.java
 
   
