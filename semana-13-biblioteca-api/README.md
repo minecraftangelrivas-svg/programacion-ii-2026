@@ -67,9 +67,11 @@ semana-13-biblioteca-api/
 
 
 
+------------------------------------------
 
 Configuración general de la base de datos.
 
+------------------------------------------
 
 
 
@@ -97,10 +99,11 @@ spring.jpa.properties.hibernate.format_sql=true
 
 
 
-
+------------------------------------------
 
 Tabla de endpoints.
 
+------------------------------------------
 
 
 Método HTTP , Endpoint,                 Descripción / Operación                          Código 
@@ -123,8 +126,11 @@ GET,/api/libros/disponibles       Listar únicamente los libros que están dispo
 
 
 
+------------------------------------------
 
 Instrucciones para ejecutar la aplicación.
+
+------------------------------------------
 
 
 
