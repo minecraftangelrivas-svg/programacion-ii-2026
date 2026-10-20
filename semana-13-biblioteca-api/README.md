@@ -1,6 +1,7 @@
 Arquitectura por capas.
 
 
+
 No se puede administrar los libro de una biblioteca personal se busaca hacer una apirest para poner administrarlos de manera automatica y almacenarlos 
 de manera Permanente en un base de datos correctamente
 
@@ -9,7 +10,10 @@ La tecnología utilizada fue Spring Boot, Maven, Spring Data JPA y PostgreSQL to
 dirigido a la base de datos la cual se relaciona a la entidad libro para vincular a la tabla libro de la base de datos
 
 
+
+
 Estructura del proyecto.
+
 
 
 semana-13-biblioteca-api/
@@ -59,7 +63,12 @@ semana-13-biblioteca-api/
 └── README.md
 
 
+
+
+
 Configuración general de la base de datos.
+
+
 
 
 spring.application.name=biblioteca-api
@@ -85,7 +94,11 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true 
 
 
+
+
+
 Tabla de endpoints.
+
 
 
 Método HTTP , Endpoint,                 Descripción / Operación                          Código 
@@ -105,7 +118,13 @@ GET,/api/libros/categoria/{categoria} Buscar libros por una categoría específi
 GET,/api/libros/disponibles       Listar únicamente los libros que están disponibles     200 OK
 
 
+
+
+
+
 Instrucciones para ejecutar la aplicación.
+
+
 
 1. Verificar que el puerto y la base de datos de postgrest
    
@@ -114,6 +133,8 @@ Instrucciones para ejecutar la aplicación.
 3. verificar que si arranque confirmando el logo de spring-boot en la terminal o consola
    
 4. Estara listo para recibir peticiones
+
+
 
 Angel Gabriel Rivas Arreola 
 9941-25-23017
