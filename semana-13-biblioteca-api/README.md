@@ -13,28 +13,49 @@ Estructura del proyecto.
 
 
 semana-13-biblioteca-api/
+
 ├── src/
 
 │   ├── main/
+
 │   │   ├── java/
+
 │   │   │   └── com/
+
 │   │   │       └── estudiante/
+
 │   │   │           └── semana13bibliotecaapi/
+
 │   │   │               ├── Entity/
-│   │   │               │   └── Libro.java                  
+
+│   │   │               │   └── Libro.java   
+
 │   │   │               ├── repository/
-│   │   │               │   └── LibroRepository.java      
+
+│   │   │               │   └── LibroRepository.java   
+
 │   │   │               ├── controller/
-│   │   │               │   └── LibroController.java        
+
+│   │   │               │   └── LibroController.java  
+
 │   │   │               └── Semana13BibliotecaApiApplication.java  
+
 │   │   └── resources/
-│   │       ├── application.properties                    
+
+│   │       ├── application.properties     
+
 │   │       ├── static/
+
 │   │       └── templates/
+
 │   └── test/
-│       └── java/                                          
-├── target/                                                
-├── pom.xml                                               
+
+│       └── java/ 
+
+├── target/    
+
+├── pom.xml   
+
 └── README.md
 
 
