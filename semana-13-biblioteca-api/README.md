@@ -91,6 +91,7 @@ Tabla de endpoints.
 Método HTTP , Endpoint,                 Descripción / Operación                          Código 
 
 GET,/api/libros                       Listar todos los libros                            200 OK 
+
 GET,/api/libros/{id}                  Buscar un libro específico por su ID               200 OK / 404 Not Found
 
 POST,/api/libros                      Registrar un nuevo libro                           201 Created
