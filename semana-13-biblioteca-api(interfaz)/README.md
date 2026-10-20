@@ -46,3 +46,9 @@ Ejecutar el proyecto Spring Boot desde el IDE o mediante la terminal (./mvnw spr
 
 
 Abrir el navegador e ingresar a http://localhost:8080. 
+
+-------------------------------------
+Comentarios
+-------------------------------------
+
+En la tarea 10 y 11 no se agrego el archivo gitignore dado a que no me lo permitia me salia como archivo escondido.
