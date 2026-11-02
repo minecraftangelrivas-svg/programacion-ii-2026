@@ -41,7 +41,8 @@ INSERT INTO reservas (area_id, residente_nombre, residente_apartamento, fecha, h
 (4, 'Pedro Morales', 'A-202', '2026-11-13', '09:00:00', '13:00:00', 20, 'CONFIRMADA'),
 (1, 'Elena García', 'C-101', '2026-11-15', '19:00:00', '23:00:00', 40, 'CONFIRMADA');
 
-Select * from areas_comunes;
+update reservas set estado ='FINALIZADA' where residente_nombre = 'messi lover'
 
+select * from AREAS_COMUNES
 
 

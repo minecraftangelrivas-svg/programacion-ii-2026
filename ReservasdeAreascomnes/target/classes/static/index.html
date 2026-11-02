@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reservas - Condominio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between">
+
+<header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <span class="text-2xl">🏢</span>
+            <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                Systema de reservacion de condominio
+            </h1>
+        </div>
+        <div class="flex items-center space-x-4">
+                <span id="mode-badge" class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    Modo: conectado
+                </span>
+            <button onclick="toggleMockMode()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                Cambiar Modo
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-1 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl self-start">
+            <h2 id="form-title" class="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+                <span>📝</span> <span>Nueva Reserva</span>
+            </h2>
+
+            <form id="reserva-form" onsubmit="handleFormSubmit(event)" novalidate class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Área Común</label>
+                    <select id="areaId" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="1">Salón de Eventos (ID: 1)</option>
+                        <option value="2">Zona de Parrilladas (ID: 2)</option>
+                        <option value="3">Cancha de Pádel (ID: 3)</option>
+                        <option value="4">Piscina Principal (ID: 4)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Nombre del Residente</label>
+                    <input type="text" id="residenteNombre" placeholder="Ej: Carlos Pérez" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Apartamento</label>
+                    <input type="text" id="residenteApartamento" placeholder="Ej: Apt 502" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Fecha</label>
+                    <input type="date" id="fecha" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Hora Inicio</label>
+                        <input type="time" id="horaInicio" step="1" value="10:00:00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Hora Fin</label>
+                        <input type="time" id="horaFin" step="1" value="12:00:00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Cantidad de Asistentes</label>
+                    <input type="number" id="cantidadAsistentes" value="5" min="1" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="submit" id="btn-submit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-xl transition text-sm shadow-lg shadow-indigo-600/20">
+                        Enviar Reserva
+                    </button>
+                    <button type="button" id="btn-cancel-edit" onclick="resetForm()" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2 px-3 rounded-xl transition text-sm">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Columna Derecha: Filtros y Tabla -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Barra de Filtros -->
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl flex flex-wrap gap-3 items-center justify-between">
+                <div class="flex flex-wrap gap-2 items-center flex-1">
+                    <input type="date" id="filtroFecha" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <button onclick="filtrarPorFecha()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-xl border border-slate-700 transition">
+                        Filtrar Fecha
+                    </button>
+
+                    <div class="h-4 w-px bg-slate-800 my-auto"></div>
+
+                    <input type="text" id="filtroResidente" placeholder="Buscar residente..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <button onclick="filtrarPorResidente()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-xl border border-slate-700 transition">
+                        Buscar
+                    </button>
+                </div>
+
+                <button onclick="cargarReservas()" class="text-xs bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 border border-indigo-500/20 px-3 py-1.5 rounded-xl transition">
+                    Resetear Filtros
+                </button>
+            </div>
+
+            <!-- Tabla de Reservas -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+                <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+                    <h3 class="font-semibold text-white text-sm">Listado de Reservas Registradas</h3>
+                    <span id="contador-reservas" class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">0 registros</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950/50 text-slate-400 uppercase border-b border-slate-800">
+                        <tr>
+                            <th class="px-4 py-3">ID</th>
+                            <th class="px-4 py-3">Área Común</th>
+                            <th class="px-4 py-3">Residente</th>
+                            <th class="px-4 py-3">Fecha & Hora</th>
+                            <th class="px-4 py-3">Estado</th>
+                            <th class="px-4 py-3 text-right">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody id="reservas-tbody" class="divide-y divide-slate-800">
+                        <!-- Filas generadas dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- Contenedor para Notificaciones Toast -->
+<div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+<!-- Scripts Javascript -->
+<script>
+    const API_BASE_URL = 'http://localhost:8080/api/reservas';
+    let useMockMode = false;
+
+    let mockReservas = [
+        { id: 1, areaId: 1, areaNombre: "Salón de Eventos", residenteNombre: "Carlos Pérez", residenteApartamento: "Apt 502", fecha: "2026-11-20", horaInicio: "14:00:00", horaFin: "18:00:00", cantidadAsistentes: 15, estado: "CONFIRMADA" },
+        { id: 2, areaId: 3, areaNombre: "Cancha de Pádel", residenteNombre: "Ana Martínez", residenteApartamento: "Apt 201", fecha: "2026-11-21", horaInicio: "09:00:00", horaFin: "11:00:00", cantidadAsistentes: 4, estado: "CONFIRMADA" }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Establecer fecha actual por defecto en el formulario
+        document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+        cargarReservas();
+    });
+
+    // Alternar entre API Real y Mock Mode
+    function toggleMockMode() {
+        useMockMode = !useMockMode;
+        const badge = document.getElementById('mode-badge');
+        if (useMockMode) {
+            badge.innerText = "Modo: Simulación (Mock)";
+            badge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20";
+            renderReservasTable(mockReservas);
+        } else {
+            badge.innerText = "Modo: API Local (Spring Boot)";
+            badge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+            cargarReservas();
+        }
+    }
+
+    // Obtener datos del formulario DTO
+    function getFormData() {
+        let hInicio = document.getElementById('horaInicio').value;
+        let hFin = document.getElementById('horaFin').value;
+
+        if (hInicio && hInicio.split(':').length === 2) hInicio += ":00";
+        if (hFin && hFin.split(':').length === 2) hFin += ":00";
+
+        return {
+            areaId: parseInt(document.getElementById('areaId').value),
+            residenteNombre: document.getElementById('residenteNombre').value,
+            residenteApartamento: document.getElementById('residenteApartamento').value,
+            fecha: document.getElementById('fecha').value,
+            horaInicio: hInicio,
+            horaFin: hFin,
+            cantidadAsistentes: parseInt(document.getElementById('cantidadAsistentes').value)
+        };
+    }
+
+    // 1. Cargar todas las reservas (GET /api/reservas)
+    async function cargarReservas() {
+        if (useMockMode) {
+            renderReservasTable(mockReservas);
+            return;
+        }
+
+        try {
+            const res = await fetch(API_BASE_URL);
+            if (res.ok) {
+                const data = await res.json();
+                renderReservasTable(data);
+            } else {
+                showToast("Error al cargar las reservas desde la API", "error");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            showToast("Error de conexión con Spring Boot (¿Está activo el backend?)", "error");
+        }
+    }
+
+    // 2. Crear o Actualizar Reserva (POST / PUT)
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        const dto = getFormData();
+        const form = document.getElementById('reserva-form');
+        const editId = form.dataset.editId;
+
+        if (useMockMode) {
+            const areaNombres = { 1: "Salón de Eventos", 2: "Zona de Parrilladas", 3: "Cancha de Pádel", 4: "Piscina Principal" };
+            if (editId) {
+                const idx = mockReservas.findIndex(r => r.id == editId);
+                if (idx !== -1) mockReservas[idx] = { id: parseInt(editId), ...dto, areaNombre: areaNombres[dto.areaId], estado: "CONFIRMADA" };
+                showToast("Reserva actualizada (Modo Simulación)", "success");
+            } else {
+                mockReservas.push({ id: mockReservas.length + 1, ...dto, areaNombre: areaNombres[dto.areaId], estado: "CONFIRMADA" });
+                showToast("Reserva registrada (Modo Simulación)", "success");
+            }
+            resetForm();
+            renderReservasTable(mockReservas);
+            return;
+        }
+
+        try {
+            const url = editId ? `${API_BASE_URL}/${editId}` : API_BASE_URL;
+            const method = editId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                // Control de Errores devueltos por ControlExpetion
+                if (data.errors && typeof data.errors === 'object') {
+                    const errorMsgs = Object.entries(data.errors)
+                        .map(([campo, msg]) => `${campo}: ${msg}`)
+                        .join(" | ");
+                    showToast(`Error de Validación: ${errorMsgs}`, "error");
+                } else if (data.message) {
+                    showToast(`[${data.error || 'Error'}]: ${data.message}`, "error");
+                } else {
+                    showToast("Error inesperado en la solicitud", "error");
+                }
+                return;
+            }
+
+            showToast(editId ? "Reserva actualizada con éxito" : "Reserva registrada con éxito", "success");
+            resetForm();
+            cargarReservas();
+        } catch (error) {
+            console.error("Error al enviar la petición:", error);
+            showToast("Error de conexión con el servidor", "error");
+        }
+    }
+
+    // 3. Cargar datos en el formulario para editar
+    function cargarParaEditar(reserva) {
+        document.getElementById('areaId').value = reserva.areaId;
+        document.getElementById('residenteNombre').value = reserva.residenteNombre;
+        document.getElementById('residenteApartamento').value = reserva.residenteApartamento;
+        document.getElementById('fecha').value = reserva.fecha;
+        document.getElementById('horaInicio').value = reserva.horaInicio;
+        document.getElementById('horaFin').value = reserva.horaFin;
+        document.getElementById('cantidadAsistentes').value = reserva.cantidadAsistentes;
+
+        const form = document.getElementById('reserva-form');
+        form.dataset.editId = reserva.id;
+
+        document.getElementById('form-title').innerHTML = `<span>✏️</span> <span>Editar Reserva #${reserva.id}</span>`;
+        const btnSubmit = document.getElementById('btn-submit');
+        btnSubmit.innerText = "Actualizar Reserva (PUT)";
+        btnSubmit.className = "flex-1 bg-amber-600 hover:bg-amber-500 text-white font-medium py-2 px-4 rounded-xl transition text-sm shadow-lg shadow-amber-600/20";
+        document.getElementById('btn-cancel-edit').classList.remove('hidden');
+
+        showToast(`Formulario cargado con la Reserva #${reserva.id}`, "info");
+    }
+
+    // Resetear Formulario
+    function resetForm() {
+        const form = document.getElementById('reserva-form');
+        form.reset();
+        delete form.dataset.editId;
+
+        document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+        document.getElementById('form-title').innerHTML = `<span>📝</span> <span>Nueva Reserva</span>`;
+
+        const btnSubmit = document.getElementById('btn-submit');
+        btnSubmit.innerText = "Enviar ReservaSolicitudDTO";
+        btnSubmit.className = "flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-xl transition text-sm shadow-lg shadow-indigo-600/20";
+
+        document.getElementById('btn-cancel-edit').classList.add('hidden');
+    }
+
+    // 4. Cancelar / Eliminar Reserva (DELETE /api/reservas/{id})
+    async function eliminarReserva(id) {
+        if (!confirm(`¿Desea cancelar/eliminar la reserva #${id}?`)) return;
+
+        if (useMockMode) {
+            mockReservas = mockReservas.filter(r => r.id !== id);
+            showToast(`Reserva #${id} eliminada (Modo Simulación)`, "success");
+            renderReservasTable(mockReservas);
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                showToast(`Reserva #${id} cancelada exitosamente`, "success");
+                cargarReservas();
+            } else {
+                showToast(`Error al eliminar la reserva #${id}`, "error");
+            }
+        } catch (error) {
+            showToast("Error de conexión al eliminar la reserva", "error");
+        }
+    }
+
+    // 5. Filtros de búsqueda
+    async function filtrarPorFecha() {
+        const fecha = document.getElementById('filtroFecha').value;
+        if (!fecha) return showToast("Seleccione una fecha para filtrar", "info");
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/buscar-por-fecha?fecha=${fecha}`);
+            if (res.ok) {
+                const data = await res.json();
+                renderReservasTable(data);
+            }
+        } catch (err) {
+            showToast("Error al filtrar por fecha", "error");
+        }
+    }
+
+    async function filtrarPorResidente() {
+        const nombre = document.getElementById('filtroResidente').value;
+        if (!nombre) return showToast("Ingrese un nombre para buscar", "info");
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/buscar-por-residente?nombre=${encodeURIComponent(nombre)}`);
+            if (res.ok) {
+                const data = await res.json();
+                renderReservasTable(data);
+            }
+        } catch (err) {
+            showToast("Error al filtrar por residente", "error");
+        }
+    }
+
+    // Renderizar la tabla con acciones (Editar y Eliminar)
+    function renderReservasTable(reservas) {
+        const tbody = document.getElementById('reservas-tbody');
+        document.getElementById('contador-reservas').innerText = `${reservas ? reservas.length : 0} registros`;
+        tbody.innerHTML = '';
+
+        if (!reservas || reservas.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">No hay reservas encontradas</td></tr>`;
+            return;
+        }
+
+        reservas.forEach(reserva => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-800/40 transition-colors';
+
+            const jsonStr = JSON.stringify(reserva).replace(/"/g, '&quot;');
+
+            tr.innerHTML = `
+                    <td class="px-4 py-3 font-semibold text-indigo-400">#${reserva.id}</td>
+                    <td class="px-4 py-3 font-medium text-slate-200">${reserva.areaNombre || 'Área #' + reserva.areaId}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-slate-200">${reserva.residenteNombre}</div>
+                        <div class="text-[10px] text-slate-400">${reserva.residenteApartamento}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div>${reserva.fecha}</div>
+                        <div class="text-[10px] text-slate-400">${reserva.horaInicio} - ${reserva.horaFin}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-0.5 text-[10px] font-semibold rounded-full ${
+                reserva.estado === 'CONFIRMADA' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+            }">
+                            ${reserva.estado}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <div class="flex items-center justify-end space-x-1">
+                            <button onclick="cargarParaEditar(${jsonStr})" title="Editar" class="p-1.5 hover:bg-amber-500/10 text-amber-400 rounded-lg transition">
+                                ✏️
+                            </button>
+                            <button onclick="eliminarReserva(${reserva.id})" title="Cancelar/Eliminar" class="p-1.5 hover:bg-rose-500/10 text-rose-400 rounded-lg transition">
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Sistema de alertas Toast
+    function showToast(mensaje, tipo = "info") {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+
+        const bgClass = tipo === 'success' ? 'bg-emerald-950 border-emerald-800 text-emerald-200' :
+            tipo === 'error' ? 'bg-rose-950 border-rose-800 text-rose-200' :
+                'bg-slate-900 border-slate-700 text-slate-200';
+
+        const icon = tipo === 'success' ? '✅' : tipo === 'error' ? '⚠️' : 'ℹ️';
+
+        toast.className = `flex items-center space-x-2 px-4 py-3 rounded-xl border shadow-2xl text-xs transition-all transform duration-300 ${bgClass}`;
+        toast.innerHTML = `<span>${icon}</span> <span>${mensaje}</span>`;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+</script>
+</body>
+</html>
