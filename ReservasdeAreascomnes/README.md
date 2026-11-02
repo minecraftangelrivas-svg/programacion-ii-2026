@@ -76,12 +76,19 @@ Asegúrate de que el indicador en la esquina superior derecha marque: Modo: cone
 Descripción de los endpoints:
 
 Método,Endpoint,Descripción,Body / Parámetros
+
 GET,/api/reservas,Obtiene el listado completo de reservas,Ninguno
+
 GET,/api/reservas/{id},Busca una reserva por su ID,Parámetro de ruta {id}
+
 GET,/api/reservas/buscar-por-fecha,Filtra reservas por fecha,Query Param ?fecha=YYYY-MM-DD
+
 GET,/api/reservas/buscar-por-residente,Filtra por nombre del residente,Query Param ?nombre=texto
+
 POST,/api/reservas,Crea una nueva reserva,Body (ReservaSolicitudDTO)
+
 PUT,/api/reservas/{id},Actualiza una reserva existente,Parámetro {id} + Body (ReservaSolicitudDTO)
+
 DELETE,/api/reservas/{id},Cancela/Elimina una reserva,Parámetro de ruta {id}
 
 
